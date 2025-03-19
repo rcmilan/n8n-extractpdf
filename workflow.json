@@ -1,0 +1,78 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "pdf-upload",
+          "options": {
+            "binaryData": true
+          }
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          340,
+          300
+        ],
+        "id": "99b95084-9260-4664-9b37-6d68a05ed1b6",
+        "webhookId": "3d5f7b84-a42a-448b-b099-9e64bbe0fc92"
+      },
+      {
+        "parameters": {
+          "operation": "pdf",
+          "options": {}
+        },
+        "name": "Extract from File",
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          540,
+          300
+        ],
+        "id": "79b37f40-2218-468b-a5ea-bb037d168206"
+      },
+      {
+        "parameters": {
+          "functionCode": "return items.map(item => {\n  const extractedText = item.json.text || 'No text extracted';\n  const fileName = item.binary?.data?.fileName || 'Unknown file';\n  return {\n    json: {\n      text: extractedText,\n      fileName: fileName\n    }\n  };\n});\n"
+        },
+        "name": "Process Extracted Text",
+        "type": "n8n-nodes-base.function",
+        "typeVersion": 1,
+        "position": [
+          740,
+          300
+        ],
+        "id": "77ed1d5e-6ea5-49ef-9339-a957e01ac7d7",
+        "alwaysOutputData": true
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Process Extracted Text",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "meta": {
+      "instanceId": "2fd789b0a19900e82c6512bea8c32b25a4de45551dd7d6b339b986b395b4592d"
+    }
+  }
